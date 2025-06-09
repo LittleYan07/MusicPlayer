@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ButtonTest</title>
+    <style>
+        .player-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 100px;
+            margin-top: 50px;
+        }
+
+        .player-controls button {
+            font-size: 24px;
+            padding: 10px 20px;
+            border: none;
+            background-color: #f0f0f0;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .player-controls button:hover {
+            background-color: #ddd;        
+        }
+    </style>
+</head>
+<body>
+    <div class="player-controls">
+        <button id="prev">&#x23EE</button>
+        <button id="play_pause">&#9658</button>
+        <button id="next">&#x23ED</button>
+    </div>
+
+    <script>
+        var playPauseBtn = document.getElementById("play_pause");
+        var isPlaying = false;
+
+        playPauseBtn.addEventListener("click", () => {
+            isPlaying = !isPlaying;
+            playPauseBtn.textContent = isPlaying ? '&#10074' : '&#9658';
+        });
+
+        document.getElementById("prev").addEventListener("click", () => {
+            console.log("Previous track");
+        });
+        document.getElementById("next").addEventListener("click", () => {
+            console.log("Next track");
+        });
+    </script>
+</body>
+</html>
