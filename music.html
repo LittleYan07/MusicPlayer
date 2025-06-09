@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>music</title>
+    <style>
+        #controlPanel {
+            border: 5px solid black;
+            border-radius: 10px;
+            width: 800px;
+            height: 750px;
+            padding: 20px;
+            margin: auto;
+        }
+
+
+        #controlPanel span {
+            border: 1px solid black;
+            cursor: pointer;
+            font-size: 5rem;
+            box-shadow: 3px 3px 7px black;
+            padding: 3px;
+            font-family: webdings;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <audio src="music/丹青客.mp3" controls id="myMusic"></audio>
+    <hr>
+
+    <div id="controlPanel">
+        <span onclick="playMusic()">4</span>
+        <span onclick="stopMusic(-1)">&lt;</span>
+    </div>
+
+
+
+</body>
+
+
+
+<script>
+    //播放音樂
+    var myMusic = document.getElementById("myMusic");
+    var controlPanel = document.getElementById("controlPanel");
+
+
+    function playMusic() {
+        console.log(event.target);
+
+        myMusic.play();
+        event.target.innerHTML = ";";
+        event.target.onclick = pauseMusic;
+    }
+
+    function pauseMusic() {
+        myMusic.pause();
+        event.target.innerHTML = "4";
+        event.target.onclick = playMusic;
+    }
+
+    function stopMusic() {
+        //音樂要停下來且時間歸零
+
+        myMusic.pause();
+        myMusic.currentTime = 0;
+
+        event.target.previousElementSibling.innerHTML = "4";
+    }
+</script>
+
+</html>
