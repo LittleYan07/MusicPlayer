@@ -1,55 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ButtonTest123</title>
+    <title>ButtonTest</title>
     <style>
-        .player-controls {
+        body {
+            border: 3px solid black;
+            border-radius: 10px;
+            width: 800px;
+            height: 750px;
+            padding: 20px;
+            margin: auto;
+            margin-top: 75px;
+        }
+
+        .MusicplayerVolume {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 100px;
-            margin-top: 50px;
+            margin-top: 425px;
+            margin-left: 700px;
         }
 
-        .player-controls button {
-            font-size: 24px;
-            padding: 10px 20px;
+        .MusicplayerVolume span {
+            font-size: 30px;
+            font-family: webdings;
+            padding: 15px 15px;
             border: none;
-            background-color: #f0f0f0;
             cursor: pointer;
-            border-radius: 10px;
-            transition: background-color 0.3s;
+            border-radius: 50px;
         }
 
-        .player-controls button:hover {
-            background-color: #ddd;        
+        .MusicplayerControls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 50px;
+            margin-top: 10px;
+        }
+
+        .MusicplayerControls span {
+            font-size: 30px;
+            font-family: webdings;
+            padding: 30px 30px;
+            border: none;
+            background-color: rgba(209, 204, 204, 0.5);
+            cursor: pointer;
+            border-radius: 50px;
+        }
+
+        .MusicplayerButtons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 50px;
+            margin-top: 10px;
+        }
+
+        .MusicplayerButtons span {
+            font-size: 30px;
+            font-family: webdings;
+            padding: 30px 30px;
+            border: none;
+            background-color: rgba(209, 204, 204, 0.5);
+            cursor: pointer;
+            border-radius: 50px;
+        }
+
+        .MusicplayerButtons button:hover {
+            background-color: #ddd;
         }
     </style>
 </head>
+
 <body>
-    <div class="player-controls">
-        <button id="prev">&#x23EE</button>
-        <button id="play_pause">&#9658</button>
-        <button id="next">&#x23ED</button>
+    <audio src="music/丹青客.mp3" controls id="myMusic"></audio>
+    <hr>
+
+    <div class="MusicplayerVolume">
+        <span onclick="setMute()">V</span>
     </div>
 
+    <div class="MusicplayerControls">
+        <span onclick="changeTime(-5)">7</span>
+        <span onclick="changeTime(+5)">8</span>
+    </div>
+
+    <div class="MusicplayerButtons">
+        <span onclick="changeMusic(-1)">9</span>
+        <span onclick="playMusic()">4</span>
+        <span onclick="changeMusic(+1)">:</span>
+    </div>
+
+
+
     <script>
-        var playPauseBtn = document.getElementById("play_pause");
-        var isPlaying = false;
+        var myMusic = document.getElementById("myMusic");
+        var MusicplayerButtons = document.getElementById("MusicplayerButtons");
 
-        playPauseBtn.addEventListener("click", () => {
-            isPlaying = !isPlaying;
-            playPauseBtn.textContent = isPlaying ? '&#10074' : '&#9658';
-        });
+        //MusicplayerVolume
+        //靜音+取消靜音
+        function setMute() {
+            myMusic.muted = !myMusic.muted;
+        }
 
-        document.getElementById("prev").addEventListener("click", () => {
-            console.log("Previous track");
-        });
-        document.getElementById("next").addEventListener("click", () => {
-            console.log("Next track");
-        });
+
+        //MusicplayerControls
+        // 倒轉+快轉
+        function changeTime(s) {
+            myMusic.currentTime += s;
+        }
+
+
+        //MusicplayerButtons
+        //播放+暫停+停止
+        function playMusic() {
+            myMusic.play();
+            event.target.innerHTML = ";";
+            event.target.onclick = pauseMusic;
+        }
+
+        function pauseMusic() {
+            myMusic.pause();
+            event.target.innerHTML = "4";
+            event.target.onclick = playMusic;
+        }
+
+        function stopMusic() {
+            //音樂要停下來且時間歸零
+            myMusic.pause();
+            myMusic.currentTime = 0;
+            event.target.previousElementSibling.innerHTML = "4";
+            event.target.previousElementSibling.onclick = playMusic;
+        }
+
+
+
+
+
+
+
+
     </script>
 </body>
+
 </html>

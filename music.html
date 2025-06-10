@@ -15,11 +15,10 @@
             margin: auto;
         }
 
-
         #controlPanel span {
             border: 1px solid black;
             cursor: pointer;
-            font-size: 5rem;
+            font-size: 4rem;
             box-shadow: 3px 3px 7px black;
             padding: 3px;
             font-family: webdings;
@@ -36,8 +35,11 @@
     <div id="controlPanel">
         <span onclick="playMusic()">4</span>
         <span onclick="stopMusic(-1)">&lt;</span>
+        <span onclick="changeTime(-5)">7</span>
+        <span onclick="changeTime(+5)">8</span>
+        <span onclick="setMute()">V</span>
+        <span onclick="setMute()">U</span>
     </div>
-
 
 
 </body>
@@ -45,14 +47,18 @@
 
 
 <script>
-    //播放音樂
     var myMusic = document.getElementById("myMusic");
-    var controlPanel = document.getElementById("controlPanel");
+    //var controlPanel = document.getElementById("controlPanel");
+
+
+    //靜音+取消靜音
+    function setMute() {
+        myMusic.muted = !myMusic.muted;
+        event.target.innerHTML = "U";
+        }
 
 
     function playMusic() {
-        console.log(event.target);
-
         myMusic.play();
         event.target.innerHTML = ";";
         event.target.onclick = pauseMusic;
@@ -66,12 +72,19 @@
 
     function stopMusic() {
         //音樂要停下來且時間歸零
-
         myMusic.pause();
         myMusic.currentTime = 0;
-
         event.target.previousElementSibling.innerHTML = "4";
+        event.target.previousElementSibling.onclick = playMusic;
     }
+
+
+    //倒轉+快轉
+    function changeTime(s) {
+        myMusic.currentTime += s;
+    }
+
+
 </script>
 
 </html>
