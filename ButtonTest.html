@@ -16,7 +16,7 @@
             margin-top: 250px;
         }
 
-        .MusicplayerControls {
+        #MusicplayerControls {
             display: flex;
             justify-content: center;
             align-items: center;
@@ -27,7 +27,7 @@
             padding: 10px 10px;
         }
 
-        .MusicplayerControls span {
+        #MusicplayerControls span {
             font-size: 25px;
             font-family: webdings;
             padding: 10px 10px;
@@ -36,7 +36,7 @@
             border-radius: 50px;
         }
 
-        .MusicplayerButtons {
+        #MusicplayerButtons {
             display: flex;
             justify-content: center;
             align-items: center;
@@ -44,14 +44,14 @@
             margin-top: 30px;
         }
 
-        .MusicplayerButtons span {
+        #MusicplayerButtons span {
             font-size: 40px;
             font-family: webdings;
             cursor: pointer;
             padding: 20px 20px;
         }
 
-        .MusicplayerButtons button:hover {
+        #MusicplayerButtons button:hover {
             background-color: #ddd;
         }
     </style>
@@ -61,16 +61,21 @@
     <audio src="music/丹青客.mp3" controls id="myMusic"></audio>
     <hr>
 
-    <div class="MusicplayerControls">
+    <div id="MusicplayerVolume">
+        <input type="range" oninput="setVolumeByRangeBar(0)" value="100">
+        <button onclick="changeVolume(-1)">-</button>
+        <button onclick="changeVolume(+1)">+</button>
+        <input type="text" value="50" readonly>
+    </div>
+
+    <div id="MusicplayerControls">
         <span onclick="changeTime(-5)">7</span>
         <span onclick="stopMusic()">&lt;</span>
         <span onclick="changeTime(+5)">8</span>
         <span onclick="setMute()">U</span>
-        <input type="range">
-        <input type="text" value="50">
     </div>
 
-    <div class="MusicplayerButtons">
+    <div id="MusicplayerButtons">
         <span onclick="changeMusic(-1)">9</span>
         <span onclick="playMusic()">4</span>
         <span onclick="changeMusic(+1)">:</span>
@@ -79,19 +84,27 @@
 
     <script>
         var myMusic = document.getElementById("myMusic");
-        var MusicplayerButtons = document.getElementById("MusicplayerButtons");
+        //var MusicplayerButtons = document.getElementById("MusicplayerButtons");
+        var MusicplayerControls = document.getElementById("MusicplayerControls");
+        var MusicplayerVolume = document.getElementById("MusicplayerVolume");
+        var rangeVolume = MusicplayerVolume.children[0];
+        var textVolume = MusicplayerVolume.children[3];
+
+
 
         //MusicplayerVolume
-        //靜音+取消靜音
-        function setMute() {
-            myMusic.muted = !myMusic.muted;
-            event.target.innerHTML = event.target.innerHTML == "U" ? "V" : "U";
-            event.target.className = event.target.className == "setMute" ? "" : "setMute";
+        function changeVolume(v) {
+            rangeVolume.value = parseInt(rangeVolume.value) + v;
+            setVolumeByRangeBar();            
         }
 
-        function changeVolume(v) {
-            myMusic.volumn += v;
+        function setVolumeByRangeBar() {
+            console.log(event.target.value);            
+            textVolume.value = rangeVolume.value;
+            myMusic.volume = textVolume.value / 100;   //真正寫入音量屬性值
         }
+
+
 
 
 
@@ -100,8 +113,15 @@
             myMusic.currentTime += s;
         }
 
+        function setMute() {
+            myMusic.muted = !myMusic.muted;
+            event.target.innerHTML = event.target.innerHTML == "U" ? "V" : "U";
+            event.target.className = event.target.className == "setMute" ? "" : "setMute";
+        }
 
-        
+
+
+
         //MusicplayerButtons
         function playMusic() {
             myMusic.play();
