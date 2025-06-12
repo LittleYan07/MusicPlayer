@@ -16,6 +16,33 @@
             margin-top: 250px;
         }
 
+        #MusicplayerVolume {
+            display: flex;
+        }
+
+        #MusicplayerVolume>input[type="range"] {            
+            width:110px;
+            height:7px;            
+            appearance: none;
+            border:1px solid black;
+            border-radius:30px;
+            background-color: rgba(211,211,211,0.95);            
+            margin-left: 70%;
+        }
+
+        #MusicplayerVolume>input[type="range"]::-webkit-appearance {
+            width:12px;
+            height:12px;
+            appearance: none;            
+            border-radius:50%;
+            background-color:rgba(0,0,0,0.9);
+        }
+
+        #MusicplayerVolume>input[type="text"] {
+            width:30px;            
+            text-align: center;
+        }        
+
         #MusicplayerControls {
             display: flex;
             justify-content: center;
@@ -62,9 +89,9 @@
     <hr>
 
     <div id="MusicplayerVolume">
-        <input type="range" oninput="setVolumeByRangeBar(0)" value="100">
         <button onclick="changeVolume(-1)">-</button>
-        <button onclick="changeVolume(+1)">+</button>
+        <button onclick="changeVolume(+1)">+</button>        
+        <input type="range" oninput="setVolumeByRangeBar(0)" value="100" orient="vertical">
         <input type="text" value="50" readonly>
     </div>
 

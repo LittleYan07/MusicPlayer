@@ -31,6 +31,28 @@
             padding: 3px;
             font-family: webdings;
         }
+
+        #volumeControl>input[type="range"] {
+            width:85%;
+            height:5px;
+            appearance: none;
+            border:1px solid black;
+            border-radius:30px;
+            background-color: rgba(211,211,211,0.95);
+        }
+
+        #volumeControl>input[type="range"]::-webkit-slider-thumb {            
+            width:12px;
+            height:12px;
+            appearance: none;            
+            border-radius:50%;
+            background-color:rgba(0,0,0,0.9);
+        }
+
+        #volumeControl>input[type="text"] {
+            width: 5%;
+            text-align: center;
+        }
     </style>
 
 </head>
@@ -62,6 +84,7 @@
     <script>
         var myMusic = document.getElementById("myMusic");
         var volumeControl = document.getElementById("volumeControl");
+        
 
 
 
