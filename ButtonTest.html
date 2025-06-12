@@ -10,38 +10,79 @@
             border: 3px solid black;
             border-radius: 10px;
             width: 800px;
-            height: 400px;
+            height: 600px;
             padding: 20px;
             margin: auto;
-            margin-top: 250px;
+            margin-top: 100px;
         }
 
-        #MusicplayerVolume {
-            display: flex;
+        #TopBlock {
+            display: block;
+            text-align: center;
+            width: 800px;
+            height: 50px;
+            background-color: yellow;
         }
 
-        #MusicplayerVolume>input[type="range"] {            
-            width:110px;
-            height:7px;            
-            appearance: none;
-            border:1px solid black;
-            border-radius:30px;
-            background-color: rgba(211,211,211,0.95);            
+        #information>div {
+            font-size: 15px;
+            line-height: 50px;
+        }
+
+        #MusicplayerVolume {            
             margin-left: 70%;
         }
 
-        #MusicplayerVolume>input[type="range"]::-webkit-appearance {
-            width:12px;
-            height:12px;
-            appearance: none;            
-            border-radius:50%;
-            background-color:rgba(0,0,0,0.9);
+        #MusicplayerVolume>button {
+            width: 25px;
+            height: 20px;
+            border-width: 1px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        :root {
+            --vol-thumb-width: 12px;
+            --vol-thumb-height: 12px;
+            --vol-thumb-appearance: none;
+            --vol-thumb-border-radius: 50%;
+            --vol-thumb-background-color: rgba(0, 0, 0, 0.9);
+        }
+
+        #MusicplayerVolume>input[type="range"] {
+            width: 110px;
+            height: 7px;
+            appearance: none;
+            border: 1px solid black;
+            border-radius: 30px;
+            background: linear-gradient(to right, rgb(255, 179, 14) 50%, rgb(240, 240, 240) 50%);
+            transition: background-image 0.3s ease;
+        }
+
+        #MusicplayerVolume>input[type="range"]::-webkit-slider-thumb {
+            width: var(--vol-thumb-width);
+            height: var(--vol-thumb-height);
+            appearance: var(--vol-thumb-appearance);
+            border-radius: var(--vol-thumb-border-radius);
+            background-color: var(--vol-thumb-background-color);
+        }
+
+        #volumeControl>input[type="range"]::-moz-range-thumb {
+            width: var(--vol-thumb-width);
+            height: var(--vol-thumb-height);
+            appearance: var(--vol-thumb-appearance);
+            border-radius: var(--vol-thumb-border-radius);
+            background-color: var(--vol-thumb-background-color);
         }
 
         #MusicplayerVolume>input[type="text"] {
-            width:30px;            
+            width: 30px;
+            height: 20px;
+            border: 2px solid black;
+            color: black;
             text-align: center;
-        }        
+            margin-left: 10px;
+        }
 
         #MusicplayerControls {
             display: flex;
@@ -81,18 +122,28 @@
         #MusicplayerButtons button:hover {
             background-color: #ddd;
         }
+
+        #MusicplayerStatus>div {
+            text-align: center;
+            font-size: 20px;
+        }
     </style>
 </head>
 
 <body>
-    <audio src="music/丹青客.mp3" controls id="myMusic"></audio>
+    <audio src="music/painter.mp3" title="HITA/小曲兒 - 丹青客" controls id="myMusic"></audio>
     <hr>
+    <div id="TopBlock">
+        <div id="information">
+            <div></div>
+        </div>
 
-    <div id="MusicplayerVolume">
-        <button onclick="changeVolume(-1)">-</button>
-        <button onclick="changeVolume(+1)">+</button>        
-        <input type="range" oninput="setVolumeByRangeBar(0)" value="100" orient="vertical">
-        <input type="text" value="50" readonly>
+        <div id="MusicplayerVolume">
+            <button onclick="changeVolume(-1)">-</button>
+            <input type="range" oninput="setVolumeByRangeBar()" value="50">
+            <button onclick="changeVolume(1)">+</button>
+            <input type="text" value="50" readonly>
+        </div>
     </div>
 
     <div id="MusicplayerControls">
@@ -102,35 +153,75 @@
         <span onclick="setMute()">U</span>
     </div>
 
-    <div id="MusicplayerButtons">
-        <span onclick="changeMusic(-1)">9</span>
-        <span onclick="playMusic()">4</span>
-        <span onclick="changeMusic(+1)">:</span>
+    <div id="Third">
+        <div id="MusicplayerButtons">
+            <span onclick="changeMusic(-1)">9</span>
+            <span onclick="playMusic()">4</span>
+            <span onclick="changeMusic(+1)">:</span>
+        </div>
+    </div>
+
+    <div id="MusicplayerStatus">
+        <div>00:00：00:00</div>
+        <div>｜正常｜</div>
     </div>
 
 
     <script>
         var myMusic = document.getElementById("myMusic");
+        var information = document.getElementById("information");
         //var MusicplayerButtons = document.getElementById("MusicplayerButtons");
         var MusicplayerControls = document.getElementById("MusicplayerControls");
         var MusicplayerVolume = document.getElementById("MusicplayerVolume");
-        var rangeVolume = MusicplayerVolume.children[0];
-        var textVolume = MusicplayerVolume.children[3];
+        var MusicplayerStatus = document.getElementById("MusicplayerStatus");
+
+
+
+
+        //Information
+        var songInformation = information.children[0];
+
+
+
+        //MusicplayerStatus
+        var musicDuraion = MusicplayerStatus.children[0];
+        var playStatus = MusicplayerStatus.children[1];
+
+        function getTimeFormat(t) {
+            var min = parseInt(t.toFixed(0) / 60);
+            var sec = parseInt(t.toFixed(0) % 60);
+
+
+            min = min < 10 ? "0" + min : min;
+            sec = sec < 10 ? "0" + sec : sec;
+
+            return min + ":" + sec;
+        }
+
+        function setMusicDuraion() {
+            musicDuraion.innerHTML = getTimeFormat(myMusic.currentTime) + " / " + getTimeFormat(myMusic.duration);
+        }
+
+
 
 
 
         //MusicplayerVolume
+        var rangeVolume = MusicplayerVolume.children[1];
+        var textVolume = MusicplayerVolume.children[3];
+
+        setVolumeByRangeBar();
+
         function changeVolume(v) {
             rangeVolume.value = parseInt(rangeVolume.value) + v;
-            setVolumeByRangeBar();            
+            setVolumeByRangeBar();
         }
 
         function setVolumeByRangeBar() {
-            console.log(event.target.value);            
             textVolume.value = rangeVolume.value;
             myMusic.volume = textVolume.value / 100;   //真正寫入音量屬性值
+            rangeVolume.style.backgroundImage = `linear-gradient(to right, rgb(255,179,14) ${value}%, rgb(240,240,240) ${value}%)`;
         }
-
 
 
 
@@ -154,12 +245,18 @@
             myMusic.play();
             event.target.innerHTML = ";";
             event.target.onclick = pauseMusic;
+
+            setInterval(setMusicDuraion, 1000);
+
+            songInformation.innerHTML = myMusic.title;
         }
 
         function pauseMusic() {
             myMusic.pause();
             event.target.innerHTML = "4";
             event.target.onclick = playMusic;
+
+            songInformation.innerHTML = "音樂暫停";
         }
 
         function stopMusic() {
@@ -168,11 +265,101 @@
             myMusic.currentTime = 0;
             event.target.previousElementSibling.innerHTML = "4";
             event.target.previousElementSibling.onclick = playMusic;
+
+            songInformation.innerHTML = "音樂停止";
         }
 
 
 
+        //////////////////////////////////////////////////////////////////////////////
 
+
+
+        //音樂狀態                       
+        function musicStatus() {
+            if(infoStatus.innerText == "[單曲循環]") {
+                changeMusic(0);
+            }
+            else if(infoStatus.innerText == "[隨機播放]") {
+                var n = Math.floor(Math.random() * musicList.length);    //隨機在musicList中選擇一首歌
+                changeMusic(n - musicList.selectedIndex);
+            }
+            else if(infoStatus.innerText == "[歌單循環]" && musicList.length == musicList.selectedIndex + 1) {
+                changeMusic(0 - musicList.selectedIndex);
+            }
+            else if (musicList.length == musicList.selectedIndex + 1) {     //是否為最後一首歌
+                stopMusic();
+            }
+            else
+                changeMusic(1);   //不是最後一首歌就播下一首歌
+        }
+
+
+        //(1)單曲循環
+        function loopMusic() {
+            infoStatus.innerHTML = infoStatus.innerHTML == "[單曲循環]" ? "[正常狀態]" : "[單曲循環]";
+        }
+        //(2)隨機播放
+        function setRandom() {
+            infoStatus.innerHTML = infoStatus.innerHTML == "[隨機播放]" ? "[正常狀態]" : "[隨機播放]";
+        }
+        //(3)歌單循環
+        function loopAll() {
+            infoStatus.innerHTML = infoStatus.innerHTML == "[歌單循環]" ? "[正常狀態]" : "[歌單循環]";
+        }
+
+
+        //音樂列表
+        var musicList = document.getElementById("musicList");
+
+        //(4)
+        function changeMusic(n) {
+            var i = musicList.selectedIndex;  //選擇的音樂索引
+            //console.log(i + n);
+            myMusic.src = musicList.children[i + n].value;    //更改音樂來源            
+            myMusic.title = musicList.children[i + n].innerText;   //選擇的音樂名稱
+            musicList.children[i + n].selected = true; //選擇的音樂
+
+            //console.log(btnPlay.innerText);
+
+            if (btnPlay.innerText == ";") {
+                myMusic.onloadeddata = playMusic; //等歌曲載入完畢後再播放音樂(callback)
+            }
+        }
+
+        //音樂進度條
+        var progressBar = document.getElementById("progressBar");
+        progressBar.max = myMusic.duration * 10000;   //音樂的總長度
+
+        function setProgress() {
+            myMusic.currentTime = progressBar.value / 10000; //更新音樂的當前時間
+        }
+
+
+        //音樂播放時間
+        function setMusicDuration() {
+            musicDuration.innerHTML = getTimeFormat(myMusic.currentTime) + "/" + getTimeFormat(myMusic.duration);
+
+            progressBar.value = myMusic.currentTime * 10000;   //更新音樂進度條的值
+            console.log(progressBar.value);
+
+            //塗音樂進度條的顏色
+            var w = myMusic.currentTime / myMusic.duration * 100;   //計算進度條的百分比
+            progressBar.style.backgroundImage = `linear-gradient(to right, #E53A40 ${w}%, rgb(240, 240, 240) ${w}%)`;
+
+        }
+
+
+        //目前歌曲的長度初始化
+        function ProgressInitial() {
+            progressBar.max = myMusic.duration * 10000;   //音樂的總長度
+            setInterval(setMusicDuration, 10);     //每秒更新一次音樂時間
+        }
+
+
+        function updateInfo(text) {
+            playStatus.innerHTML = text;
+        }
 
 
 
