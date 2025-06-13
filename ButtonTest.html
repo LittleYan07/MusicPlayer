@@ -29,7 +29,7 @@
             line-height: 50px;
         }
 
-        #MusicplayerVolume {            
+        #MusicplayerVolume {
             margin-left: 70%;
         }
 
@@ -47,6 +47,15 @@
             --vol-thumb-appearance: none;
             --vol-thumb-border-radius: 50%;
             --vol-thumb-background-color: rgba(0, 0, 0, 0.9);
+
+            --progress-appearance: none;
+            --progress-width: 5px;
+            --progress-height: 5px;
+            --progress-background-color: #E53A40;
+            --progress-border-radius: 50%;
+            --progress-transition: 0.5s;
+            --progress-hover-width: 15px;
+            --progress-hover-height: 15px;
         }
 
         #MusicplayerVolume>input[type="range"] {
@@ -104,6 +113,42 @@
             border-radius: 50px;
         }
 
+        #ProgressBar {
+            width: 110px;
+            height: 7px;
+            appearance: none;
+            border-radius: 30px;
+            background: linear-gradient(to right, rgb(255, 179, 14) 50%, rgb(240, 240, 240) 50%);
+        }
+
+        #ProgressBar::-webkit-slider-thumb {
+            appearance: var(--progress-appearance);
+            background-color: var(--progress-background-color);
+            width: var(--progress-width);
+            height: var(--progress-height);
+        }
+
+        #ProgressBar::-webkit-slider-thumb:hover {
+            border-radius: var(--progress-border-radius);
+            transition: var(--progress-transition);
+            width: var(--progress-hover-width);
+            height: var(--progress-hover-height);
+        }
+
+        #ProgressBar::-moz-range-thumb {
+            appearance: var(--progress-appearance);
+            background-color: var(--progress-background-color);
+            width: var(--progress-width);
+            height: var(--progress-height);
+        }
+
+        #ProgressBar::-moz-range-thumb:hover {
+            border-radius: var(--progress-border-radius);
+            transition: var(--progress-transition);
+            width: var(--progress-hover-width);
+            height: var(--progress-hover-height);
+        }
+
         #MusicplayerButtons {
             display: flex;
             justify-content: center;
@@ -153,6 +198,10 @@
         <span onclick="setMute()">U</span>
     </div>
 
+
+    <input type="range" id="ProgressBar" min="0">
+
+
     <div id="Third">
         <div id="MusicplayerButtons">
             <span onclick="changeMusic(-1)">9</span>
@@ -170,16 +219,23 @@
     <script>
         var myMusic = document.getElementById("myMusic");
         var information = document.getElementById("information");
-        //var MusicplayerButtons = document.getElementById("MusicplayerButtons");
+        var MusicplayerButtons = document.getElementById("MusicplayerButtons");
         var MusicplayerControls = document.getElementById("MusicplayerControls");
         var MusicplayerVolume = document.getElementById("MusicplayerVolume");
         var MusicplayerStatus = document.getElementById("MusicplayerStatus");
+        var ProgressBar = document.getElementById("ProgressBar");
 
 
 
 
-        //Information
-        var songInformation = information.children[0];
+        //ProgressBar
+        ProgressBar.max = myMusic.duration * 10000;
+
+        function ProgressInitial() {
+            ProgressBar.max = myMusic.duration * 10000;
+            setInterval(setMusicDuraion, 10);
+        }
+
 
 
 
@@ -200,6 +256,12 @@
 
         function setMusicDuraion() {
             musicDuraion.innerHTML = getTimeFormat(myMusic.currentTime) + " / " + getTimeFormat(myMusic.duration);
+
+            ProgressBar.value = myMusic.currentTime * 10000;
+            console.log(ProgressBar.value);
+
+            var w = myMusic.currentTime / myMusic.duration * 100;
+            ProgressBar.style.backgroundImage = `linear-gradient(to right, rgb(255,179,14) ${w}%, rgb(240,240,240) ${w}%)`;
         }
 
 
@@ -220,7 +282,7 @@
         function setVolumeByRangeBar() {
             textVolume.value = rangeVolume.value;
             myMusic.volume = textVolume.value / 100;   //真正寫入音量屬性值
-            rangeVolume.style.backgroundImage = `linear-gradient(to right, rgb(255,179,14) ${value}%, rgb(240,240,240) ${value}%)`;
+            rangeVolume.style.backgroundImage = `linear-gradient(to right, rgb(255,179,14) ${rangeVolume.value}%, rgb(240,240,240) ${rangeVolume.value}%)`;
         }
 
 
@@ -239,16 +301,22 @@
 
 
 
+        //Information
+        var songInformation = information.children[0];
+
 
         //MusicplayerButtons
+        function updateInfo(text) {
+            songInformation.innerHTML = text;
+        }
+
         function playMusic() {
             myMusic.play();
             event.target.innerHTML = ";";
             event.target.onclick = pauseMusic;
 
-            setInterval(setMusicDuraion, 1000);
-
-            songInformation.innerHTML = myMusic.title;
+            ProgressInitial();
+            updateInfo("正在播放： " + myMusic.title);            
         }
 
         function pauseMusic() {
@@ -256,7 +324,7 @@
             event.target.innerHTML = "4";
             event.target.onclick = playMusic;
 
-            songInformation.innerHTML = "音樂暫停";
+            updateInfo("音樂暫停");
         }
 
         function stopMusic() {
@@ -266,100 +334,9 @@
             event.target.previousElementSibling.innerHTML = "4";
             event.target.previousElementSibling.onclick = playMusic;
 
-            songInformation.innerHTML = "音樂停止";
+            updateInfo("音樂停止");
         }
 
-
-
-        //////////////////////////////////////////////////////////////////////////////
-
-
-
-        //音樂狀態                       
-        function musicStatus() {
-            if(infoStatus.innerText == "[單曲循環]") {
-                changeMusic(0);
-            }
-            else if(infoStatus.innerText == "[隨機播放]") {
-                var n = Math.floor(Math.random() * musicList.length);    //隨機在musicList中選擇一首歌
-                changeMusic(n - musicList.selectedIndex);
-            }
-            else if(infoStatus.innerText == "[歌單循環]" && musicList.length == musicList.selectedIndex + 1) {
-                changeMusic(0 - musicList.selectedIndex);
-            }
-            else if (musicList.length == musicList.selectedIndex + 1) {     //是否為最後一首歌
-                stopMusic();
-            }
-            else
-                changeMusic(1);   //不是最後一首歌就播下一首歌
-        }
-
-
-        //(1)單曲循環
-        function loopMusic() {
-            infoStatus.innerHTML = infoStatus.innerHTML == "[單曲循環]" ? "[正常狀態]" : "[單曲循環]";
-        }
-        //(2)隨機播放
-        function setRandom() {
-            infoStatus.innerHTML = infoStatus.innerHTML == "[隨機播放]" ? "[正常狀態]" : "[隨機播放]";
-        }
-        //(3)歌單循環
-        function loopAll() {
-            infoStatus.innerHTML = infoStatus.innerHTML == "[歌單循環]" ? "[正常狀態]" : "[歌單循環]";
-        }
-
-
-        //音樂列表
-        var musicList = document.getElementById("musicList");
-
-        //(4)
-        function changeMusic(n) {
-            var i = musicList.selectedIndex;  //選擇的音樂索引
-            //console.log(i + n);
-            myMusic.src = musicList.children[i + n].value;    //更改音樂來源            
-            myMusic.title = musicList.children[i + n].innerText;   //選擇的音樂名稱
-            musicList.children[i + n].selected = true; //選擇的音樂
-
-            //console.log(btnPlay.innerText);
-
-            if (btnPlay.innerText == ";") {
-                myMusic.onloadeddata = playMusic; //等歌曲載入完畢後再播放音樂(callback)
-            }
-        }
-
-        //音樂進度條
-        var progressBar = document.getElementById("progressBar");
-        progressBar.max = myMusic.duration * 10000;   //音樂的總長度
-
-        function setProgress() {
-            myMusic.currentTime = progressBar.value / 10000; //更新音樂的當前時間
-        }
-
-
-        //音樂播放時間
-        function setMusicDuration() {
-            musicDuration.innerHTML = getTimeFormat(myMusic.currentTime) + "/" + getTimeFormat(myMusic.duration);
-
-            progressBar.value = myMusic.currentTime * 10000;   //更新音樂進度條的值
-            console.log(progressBar.value);
-
-            //塗音樂進度條的顏色
-            var w = myMusic.currentTime / myMusic.duration * 100;   //計算進度條的百分比
-            progressBar.style.backgroundImage = `linear-gradient(to right, #E53A40 ${w}%, rgb(240, 240, 240) ${w}%)`;
-
-        }
-
-
-        //目前歌曲的長度初始化
-        function ProgressInitial() {
-            progressBar.max = myMusic.duration * 10000;   //音樂的總長度
-            setInterval(setMusicDuration, 10);     //每秒更新一次音樂時間
-        }
-
-
-        function updateInfo(text) {
-            playStatus.innerHTML = text;
-        }
 
 
 
