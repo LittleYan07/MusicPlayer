@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusicPlayer</title>
+    <link rel="stylesheet" href="MusicPlayer.css">
+</head>
+
+<body>
+    <audio src="music/painter.mp3" title="HITA/小曲兒 - 丹青客" id="myMusic" onended="musicSituation()"></audio>
+
+    <div class="Container">
+        <div class="outer">
+            <div class="inner">
+                <div id="List">
+                    <select id="musicList" onchange="changeMusic(0)">
+                        <option value="music/painter.mp3">HITA/小曲兒 - 丹青客</option>
+                        <option value="music/wulin.mp3">天涯明月刀 - 天涯</option>
+                        <option value="music/past.mp3">Smile_小千 - 花間舊事</option>
+                        <option value="music/mortal.mp3">小曲兒 - 紅塵</option>
+                        <option value="music/life.mp3">冬子 - 情深不壽</option>
+                        <option value="music/poem.mp3">玄觴/執素兮 - 畫詩</option>
+                        <option value="music/fang.mp3">方承意個人曲 - 應看千秋</option>
+                    </select>
+                </div>
+
+                <img src="image/cd.png" id="CD">
+
+
+                <div id="information">
+                    <div></div>
+                </div>
+
+                <div id="Volume">
+                    <div id="MusicplayerVolume">
+                        <button onclick="changeVolume(-1)">-</button>
+                        <input type="range" oninput="setVolumeByRangeBar()" value="50">
+                        <button onclick="changeVolume(1)">+</button>
+                        <input type="text" value="50" readonly>
+                    </div>
+                </div>
+
+                <div id="MusicplayerControls">
+                    <img src="image/logo.png" id="logo">                    
+                    <span onclick="changeTime(-5)">7</span>
+                    <span onclick="stopMusic()">&lt;</span>
+                    <span onclick="changeTime(5)">8</span>
+                    <span onclick="setMute()">U</span>
+                </div>
+
+
+                <input type="range" id="ProgressBar" min="0" value="0" oninput="setProgress()">
+
+
+                <div id="FunctionButtons">
+                    <span onclick="setRandom()">s</span>
+
+                    <div id="MusicplayerButtons">
+                        <span onclick="changeMusic(-1)">9</span>
+                        <span onclick="playMusic()">4</span>
+                        <span onclick="changeMusic(1)">:</span>
+                    </div>                    
+                                                
+                    <span onclick="loopAll()">`</span>                    
+                </div>
+
+                <div id="MusicplayerStatus">
+                    <div>00:00：00:00</div>
+                    <div>正常</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="MusicPlayer.js"></script>
+
+</body>
+
+</html>
